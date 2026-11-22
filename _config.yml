@@ -1,0 +1,3 @@
+exclude:
+  - php-app
+  - README.md

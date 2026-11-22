@@ -1,0 +1,1 @@
+<section class="container section empty-state"><span>✳</span><h1>Oops, wrong turn!</h1><p>That page doesn't exist, but we have plenty of delicious things to discover.</p><a href="<?=h(url())?>" class="btn btn-primary">Back home ↗</a></section>

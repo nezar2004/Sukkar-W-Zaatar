@@ -1,0 +1,65 @@
+-- BIT481 Sukkar & Zaatar · MySQL 8 / MariaDB 10.5+
+CREATE DATABASE IF NOT EXISTS sukkar_zaatar CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE sukkar_zaatar;
+CREATE TABLE IF NOT EXISTS users (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(100) NOT NULL,
+ email VARCHAR(190) NOT NULL UNIQUE,
+ password_hash VARCHAR(255) NOT NULL,
+ role ENUM('customer','admin') NOT NULL DEFAULT 'customer',
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS categories (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(100) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS products (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ category_id INT UNSIGNED NOT NULL,
+ name VARCHAR(120) NOT NULL,
+ short_description VARCHAR(200) NOT NULL DEFAULT '',
+ description TEXT NOT NULL,
+ price DECIMAL(10,2) NOT NULL,
+ stock INT UNSIGNED NOT NULL DEFAULT 0,
+ image_key VARCHAR(30) NOT NULL DEFAULT 'cake',
+ featured BOOLEAN NOT NULL DEFAULT FALSE,
+ active BOOLEAN NOT NULL DEFAULT TRUE,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT chk_product_price CHECK(price>0),
+ FOREIGN KEY (category_id) REFERENCES categories(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+ INDEX idx_product_category_active(category_id,active)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS orders (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id INT UNSIGNED NOT NULL,
+ customer_name VARCHAR(100) NOT NULL,
+ phone VARCHAR(30) NOT NULL,
+ address VARCHAR(255) NOT NULL,
+ note VARCHAR(500) NOT NULL DEFAULT '',
+ payment_method ENUM('cod','pickup') NOT NULL,
+ subtotal DECIMAL(10,2) NOT NULL,
+ delivery_fee DECIMAL(10,2) NOT NULL,
+ total DECIMAL(10,2) NOT NULL,
+ status ENUM('pending','preparing','ready','completed','cancelled') NOT NULL DEFAULT 'pending',
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
+ INDEX idx_order_user_date(user_id,created_at)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS order_items (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ order_id INT UNSIGNED NOT NULL,
+ product_id INT UNSIGNED NOT NULL,
+ quantity INT UNSIGNED NOT NULL,
+ unit_price DECIMAL(10,2) NOT NULL,
+ CONSTRAINT chk_order_item_quantity CHECK(quantity>0),
+ UNIQUE KEY uq_order_product(order_id,product_id),
+ FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+ FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS contact_messages (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(100) NOT NULL,
+ email VARCHAR(190) NOT NULL,
+ message TEXT NOT NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
