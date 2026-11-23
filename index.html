@@ -697,7 +697,7 @@ if(form.id==='checkout-form'){
   if(submit.disabled)return;
   submit.disabled=true;
   try{
-    const cloud=await import('./assets/firebase-orders.js');
+    const cloud=await import('./assets/firebase-orders.js?v=1');
     if(cloud.firebaseConfig){
       const order=await cloud.submitOrder({name,phone,method,address,items:items.map(({id,qty})=>({id,qty})),total:Math.round(total*100)});
       state.orders.push({...order,date:new Date().toISOString(),name,items,total});
@@ -748,11 +748,13 @@ $('#shop-link').addEventListener('click',()=>{if(view!=='home')show('home')});
 const pageAnchors=[...document.querySelectorAll('.nav .links a[href^="#"], .hero a[href^="#"], .cinema a[href^="#"], .story a[href^="#"], .feature-split a[href^="#"]')].filter(a=>!a.hasAttribute('data-view'));pageAnchors.forEach(a=>a.addEventListener('click',e=>{if(view!=='home'){e.preventDefault();show('home');requestAnimationFrame(()=>{const x=document.querySelector(a.getAttribute('href'));if(x)x.scrollIntoView({behavior:'smooth',block:'start'})})}}));
 
 document.querySelector('#quick-close').addEventListener('click',()=>document.querySelector('#quick-dialog').close());document.querySelector('#quick-dialog').addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()});document.querySelector('#sort-menu').addEventListener('change',renderShop);document.querySelector('#wishlist-filter').addEventListener('click',()=>{onlyFavourites=!onlyFavourites;renderShop()});
-import('./assets/firebase-orders.js').then(async cloud=>{
+import('./assets/firebase-orders.js?v=1').then(async cloud=>{
   if(!cloud.firebaseConfig)return;
   document.querySelector('.top').textContent='Sukkar & Zaatar · Pickup and delivery';
   const admin=document.querySelector('footer [data-view="admin"]');
   if(admin){delete admin.dataset.view;admin.href='firebase-orders.html';admin.textContent='Staff orders';}
+  state.products=stock.map(item=>({...item}));
+  renderShop();
   const stocks=await cloud.requestOrderService('getBakeryInventory');
   state.products=stock.map(item=>({...item,qty:stocks[item.id]??item.qty}));
   renderShop();

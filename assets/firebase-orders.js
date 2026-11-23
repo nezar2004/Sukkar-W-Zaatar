@@ -1,4 +1,4 @@
-import { firebaseConfig, ordersApiUrl } from './firebase-config.js';
+import { firebaseConfig, ordersApiUrl } from './firebase-config.js?v=1';
 
 let services;
 async function connect() {

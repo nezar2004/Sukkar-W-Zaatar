@@ -1,4 +1,4 @@
-import { firebaseConfig, requestOrderService, sendStaffLink, isStaffLink, signInStaff, signOutStaff } from './firebase-orders.js';
+import { firebaseConfig, requestOrderService, sendStaffLink, isStaffLink, signInStaff, signOutStaff } from './firebase-orders.js?v=1';
 
 const byId = id => document.getElementById(id);
 const status = byId('status');
