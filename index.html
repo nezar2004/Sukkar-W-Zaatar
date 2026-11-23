@@ -627,6 +627,9 @@ function add(id,quantity=1,announce=toast){
   return true;
 }
 const orderStages=['New','Preparing','Ready','Completed'];
+function trackingLink(order){
+  return order.token?'<a class="action" href="firebase-orders.html#track='+encodeURIComponent(order.token)+'">Track order ↗</a>':'';
+}
 function orderStatusLabel(order){
   return order.status==='Ready'?(order.method==='pickup'?'Ready for pickup':'Ready for delivery'):order.status;
 }
@@ -641,9 +644,9 @@ function orderProgress(order){
 }
 function show(page){view=page;const panel=$('#app-view');panel.hidden=page==='home';document.querySelectorAll('main > :not(#app-view)').forEach(e=>e.hidden=page!=='home');if(page==='home'){panel.replaceChildren();window.scrollTo({top:0,behavior:'smooth'});renderShop();return}if($('#bag-modal').open)$('#bag-modal').close();const rows=cartEntries();let html='';
 if(page==='cart'){html='<p class="eyebrow">Shopping bag</p><h1>Your delicious picks.</h1>'+(rows.length?rows.map(({p,q})=>'<div class="data-row"><div><strong>'+esc(p.name)+'</strong><p class="muted">'+money(p.price)+'</p></div><div><button class="action" data-qty="'+p.id+'" data-delta="-1">−</button> &nbsp; '+q+' &nbsp; <button class="action" data-qty="'+p.id+'" data-delta="1">+</button> &nbsp; <button class="action" data-remove="'+p.id+'">Remove</button></div><strong>'+money(p.price*q)+'</strong></div>').join('')+'<div class="data-row"><h3>Subtotal</h3><h3>'+money(subtotal())+'</h3></div><p class="muted">Delivery: 2 JOD, or free on orders of 25 JOD and above.</p><button class="btn" data-view="checkout">Continue to checkout →</button>':'<div class="soft">Your bag is empty. <button class="linkbutton" data-view="home">Browse the menu</button></div>')}
-if(page==='checkout'){if(!rows.length)return show('cart');html='<p class="eyebrow">Almost yours</p><h1>Checkout.</h1><p class="muted">Demo checkout only. No real payment or delivery is processed.</p><form id="checkout-form" class="form-grid"><label class="f-label">Full name<input class="field" name="name" required minlength="2" maxlength="80" value="'+esc(state.customer?.name||'')+'"></label><label class="f-label">Jordanian phone number<input class="field" name="phone" type="tel" required pattern="0[0-9]{9}" placeholder="07XXXXXXXX"></label><label class="f-label">Fulfilment method<select class="field" name="method"><option value="delivery">Home delivery</option><option value="pickup">Pickup from bakery</option></select></label><label class="f-label">Delivery address (required for delivery)<input class="field" name="address" maxlength="220" placeholder="City, street, building"></label><label class="f-label">Notes<textarea class="field" name="notes" rows="3" maxlength="400"></textarea></label><div class="soft">Subtotal: '+money(subtotal())+'<p>Delivery fee: 2 JOD when the order is below 25 JOD.</p></div><button class="btn" type="submit">Place demo order ↗</button></form>'}
-if(page==='success'){const order=state.orders.at(-1);html='<p class="eyebrow">Order confirmation</p><h1>Demo order saved.</h1><p><strong>Order #'+order.id+'</strong> · '+esc(orderStatusLabel(order))+'</p><p>Your order is saved only in this browser. You can find it under My Orders.</p><p class="muted">This demo does not send an order to the bakery or charge you.</p><button class="btn" data-view="orders">View my orders →</button>'}
-if(page==='orders'){html='<p class="eyebrow">Your account</p><h1>My orders.</h1>'+(state.orders.length?state.orders.slice().reverse().map(o=>'<div class="soft" style="margin-bottom:14px"><div class="data-row"><b>Order #'+o.id+'</b><span class="badge">'+esc(orderStatusLabel(o))+'</span></div>'+orderProgress(o)+'<p>'+esc(o.name)+' · '+new Date(o.date).toLocaleString()+'</p><p>'+o.items.map(i=>esc(i.name)+' × '+i.qty).join(', ')+'</p><b>'+money(o.total)+'</b></div>').join(''):'<div class="soft">No orders yet. <button class="linkbutton" data-view="home">Start shopping</button></div>')}
+if(page==='checkout'){if(!rows.length)return show('cart');html='<p class="eyebrow">Almost yours</p><h1>Checkout.</h1><p class="muted">Demo checkout only. No real payment or delivery is processed.</p><form id="checkout-form" class="form-grid"><label class="f-label">Full name<input class="field" name="name" required minlength="2" maxlength="80" value="'+esc(state.customer?.name||'')+'"></label><label class="f-label">Jordanian phone number<input class="field" name="phone" type="tel" required pattern="0[0-9]{9}" placeholder="07XXXXXXXX"></label><label class="f-label">Fulfilment method<select class="field" name="method"><option value="delivery">Home delivery</option><option value="pickup">Pickup from bakery</option></select></label><label class="f-label">Delivery address (required for delivery)<input class="field" name="address" maxlength="220" placeholder="City, street, building"></label><label class="f-label">Notes<textarea class="field" name="notes" rows="3" maxlength="400"></textarea></label><div class="soft">Subtotal: '+money(subtotal())+'<p id="checkout-breakdown" aria-live="polite"></p></div><button class="btn" type="submit">Place demo order ↗</button></form>'}
+if(page==='success'){const order=state.orders.at(-1);html=order.token?'<h1>Order confirmed.</h1><p>Order #'+esc(order.id)+'</p><p>Save the private link to track your order on another device.</p>'+trackingLink(order)+ ' <button class="btn" data-view="orders">My orders</button>':'<p class="eyebrow">Order confirmation</p><h1>Demo order saved.</h1><p><strong>Order #'+order.id+'</strong> · '+esc(orderStatusLabel(order))+'</p><p>Your order is saved only in this browser. You can find it under My Orders.</p><p class="muted">This demo does not send an order to the bakery or charge you.</p><button class="btn" data-view="orders">View my orders →</button>'}
+if(page==='orders'){html='<p class="eyebrow">Your account</p><h1>My orders.</h1>'+(state.orders.length?state.orders.slice().reverse().map(o=>'<div class="soft" style="margin-bottom:14px"><div class="data-row"><b>Order #'+o.id+'</b><span class="badge">'+esc(orderStatusLabel(o))+'</span></div>'+ (o.token?trackingLink(o):orderProgress(o))+'<p>'+esc(o.name)+' · '+new Date(o.date).toLocaleString()+'</p><p>'+o.items.map(i=>esc(i.name)+' × '+i.qty).join(', ')+'</p><b>'+money(o.total)+'</b></div>').join(''):'<div class="soft">No orders yet. <button class="linkbutton" data-view="home">Start shopping</button></div>')}
 if(page==='account'){html='<p class="eyebrow">Customer area</p><h1>My account.</h1><p class="muted">Demo profile only. Real password login is available in the separate PHP website.</p><form class="form-grid" id="account-form"><label class="f-label">Your name<input class="field" name="name" minlength="2" maxlength="80" required value="'+esc(state.customer?.name||'')+'"></label><label class="f-label">Email address<input class="field" name="email" type="email" required value="'+esc(state.customer?.email||'')+'"></label><button class="btn">Save demo profile</button></form><p><button data-view="orders" class="action">My Orders</button></p>'}
 if(page==='contact'){html='<p class="eyebrow">Get in touch</p><h1>Say hello.</h1><p class="muted">Irbid, Jordan · Academic demonstration business</p><form class="form-grid" id="contact-form"><label class="f-label">Your name<input class="field" name="name" required minlength="2" maxlength="80"></label><label class="f-label">Email<input class="field" type="email" name="email" required></label><label class="f-label">Message<textarea class="field" name="message" rows="5" required minlength="5" maxlength="1000"></textarea></label><button class="btn">Send demo message</button></form>'}
 if(page==='detail'){
@@ -652,7 +655,20 @@ if(page==='detail'){
   html='<a class="action" href="./#menu">← Back to menu</a><div id="product-page"></div>';
 }
 if(page==='admin'){html='<p class="eyebrow">Local management demo</p><h1>Bakery dashboard.</h1><p class="muted">For demonstration only — stored locally in your browser. Not a secure production admin interface.</p><div class="stat-row"><div class="stat"><small>Products</small><h2>'+state.products.length+'</h2></div><div class="stat"><small>Orders</small><h2>'+state.orders.length+'</h2></div><div class="stat"><small>Demo sales</small><h2>'+money(state.orders.reduce((t,o)=>t+o.total,0))+'</h2></div></div><div class="soft" style="margin-top:24px"><h3>Add product</h3><form class="form-grid" id="product-form"><input class="field" name="name" required maxlength="90" placeholder="Product name"><input class="field" type="number" step=".01" min=".01" max="999" name="price" required placeholder="Price in JOD"><select class="field" name="cat"><option>Cakes</option><option>Pastries</option><option>Cookies &amp; Brownies</option><option>Hot Drinks</option><option>Cold Drinks</option></select><input class="field" type="number" name="qty" min="0" max="999" value="10" required><button class="btn">Add demo product</button></form></div><h2>Inventory</h2>'+state.products.map(p=>'<div class="data-row"><b>'+esc(p.name)+'</b><span>'+money(p.price)+' · Stock: '+p.qty+'</span><span><button class="action" data-edit="'+p.id+'">Edit</button> <button class="action" data-delete="'+p.id+'">Delete</button></span></div>').join('')+'<h2>Orders</h2>'+(state.orders.map(o=>'<div class="data-row"><span>#'+o.id+' · '+esc(o.name)+' · '+money(o.total)+'</span><select class="field" style="width:auto" data-status="'+o.id+'">'+[...orderStages,'Cancelled'].map(v=>'<option '+(o.status===v?'selected':'')+'>'+v+'</option>').join('')+'</select></div>').join('')||'<p>No orders yet.</p>')+'<h2>Customer messages</h2>'+(state.messages.map(m=>'<p class="soft"><b>'+esc(m.name)+'</b>: '+esc(m.message)+'</p>').join('')||'<p>No messages yet.</p>')+'<p><button class="action" id="reset-demo">Reset demonstration data</button></p>'}
-panel.innerHTML=html;if(page==='detail')renderProduct(selected,$('#product-page'));panel.scrollIntoView({behavior:'smooth',block:'start'});updateBag()}
+panel.innerHTML=html;
+if(page==='checkout'){
+  const form=$('#checkout-form');
+  const refreshTotal=()=>{
+    const delivery=form.elements.method.value==='delivery';
+    const fee=delivery&&subtotal()<25?2:0;
+    form.elements.address.required=delivery;
+    form.elements.address.disabled=!delivery;
+    $('#checkout-breakdown').textContent='Delivery: '+money(fee)+' · Total: '+money(subtotal()+fee);
+  };
+  form.elements.method.addEventListener('change',refreshTotal);
+  refreshTotal();
+}
+if(page==='detail')renderProduct(selected,$('#product-page'));panel.scrollIntoView({behavior:'smooth',block:'start'});updateBag()}
 function refreshBag(){
   if(!$('#bag-modal').open){show('cart');return;}
   const active=document.activeElement.dataset;
@@ -664,8 +680,39 @@ function refreshBag(){
 function changeQty(id,delta){let p=product(id);if(!p)return;let n=Math.max(0,Math.min(p.qty,Number(state.cart[id]||0)+delta));if(n)state.cart[id]=n;else delete state.cart[id];save();refreshBag()}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-add],[data-view],[data-detail],[data-filter],[data-qty],[data-remove],[data-edit],[data-delete],[data-heart],[data-quick],[data-bundle],#reset-demo');if(!b)return;if(b.dataset.heart){toggleFavourite(b.dataset.heart);if(b.closest('#quick-dialog, #product-page'))b.textContent=favourites.includes(Number(b.dataset.heart))?'♥ Saved':'♡ Save favourite';return}if(b.dataset.quick){quickView(b.dataset.quick);return}if(b.dataset.bundle){const ids=b.dataset.bundle.split(',');const valid=ids.every(id=>{const p=product(id);return p&&p.qty>(state.cart[id]||0)});if(!valid)return toast('Some items are out of stock');ids.forEach(id=>{state.cart[id]=(state.cart[id]||0)+1});save();renderShop();toast('Morning pair added to your bag!');return}if(b.dataset.add){add(b.dataset.add);if(view==='cart')show('cart');return}if(b.dataset.view){e.preventDefault();show(b.dataset.view);return}if(b.dataset.detail){selected=b.dataset.detail;show('detail');return}if(b.dataset.filter){filter=b.dataset.filter;renderShop();return}if(b.dataset.qty){changeQty(b.dataset.qty,Number(b.dataset.delta));return}if(b.dataset.remove){delete state.cart[b.dataset.remove];save();refreshBag();return}if(b.dataset.delete){if(!confirm('Delete this demo product?'))return;state.products=state.products.filter(p=>p.id!==Number(b.dataset.delete));delete state.cart[b.dataset.delete];save();show('admin');return}if(b.dataset.edit){const p=product(b.dataset.edit);const n=prompt('Product name',p.name);if(n===null)return;const price=prompt('Price in JOD',p.price);if(price===null)return;const q=prompt('Quantity',p.qty);if(q===null)return;if(!n.trim()||!Number.isFinite(Number(price))||Number(price)<=0||!Number.isInteger(Number(q))||Number(q)<0)return toast('Invalid product values');p.name=n.trim().slice(0,90);p.price=Number(price);p.qty=Number(q);save();show('admin');return}if(b.id==='reset-demo'){if(confirm('Reset all local demo data?')){state={products:stock.map(p=>({...p})),cart:{},orders:[],messages:[],customer:null,catalogVersion:4,favourites:[]};save();show('admin')}}});
 document.addEventListener('change',e=>{const id=e.target.dataset.status;if(id){const o=state.orders.find(o=>o.id===Number(id));if(o){o.status=e.target.value;save();toast('Order status updated')}}});
-document.addEventListener('submit',e=>{const form=e.target;if(!['checkout-form','account-form','contact-form','product-form'].includes(form.id))return;e.preventDefault();if(!form.reportValidity())return;const f=new FormData(form);
-if(form.id==='checkout-form'){const method=f.get('method'),address=String(f.get('address')||'').trim();if(method==='delivery'&&!address){toast('Please enter the delivery address.');form.querySelector('[name=address]').focus();return}const items=cartEntries().map(({p,q})=>({name:p.name,qty:q,price:p.price}));if(!items.length)return show('cart');for(const [id,q] of Object.entries(state.cart)){const p=product(id);if(p)p.qty=Math.max(0,p.qty-q)}const fee=method==='delivery'&&subtotal()<25?2:0;state.orders.push({id:Date.now(),date:new Date().toISOString(),name:String(f.get('name')).trim(),phone:String(f.get('phone')).trim(),method,address,status:'New',items,total:subtotal()+fee});state.cart={};save();show('success');return}
+document.addEventListener('submit',async e=>{const form=e.target;if(!['checkout-form','account-form','contact-form','product-form'].includes(form.id))return;e.preventDefault();if(!form.reportValidity())return;const f=new FormData(form);
+if(form.id==='checkout-form'){
+  const method=f.get('method');
+  const address=String(f.get('address')||'').trim();
+  if(method==='delivery'&&!address){
+    toast('Please enter the delivery address.');
+    form.querySelector('[name=address]').focus();
+    return;
+  }
+  const items=cartEntries().map(({p,q})=>({id:Number(p.id),name:p.name,qty:q,price:p.price}));
+  if(!items.length)return show('cart');
+  const total=subtotal()+(method==='delivery'&&subtotal()<25?2:0);
+  const name=String(f.get('name')).trim(),phone=String(f.get('phone')).trim();
+  const submit=form.querySelector('button[type=submit]');
+  if(submit.disabled)return;
+  submit.disabled=true;
+  try{
+    const cloud=await import('./assets/firebase-orders.js');
+    if(cloud.firebaseConfig){
+      const order=await cloud.submitOrder({name,phone,method,address,items:items.map(({id,qty})=>({id,qty})),total:Math.round(total*100)});
+      state.orders.push({...order,date:new Date().toISOString(),name,items,total});
+      for(const item of items){const p=product(item.id);if(p)p.qty=Math.max(0,p.qty-item.qty);}
+    }else{
+      for(const item of items){const p=product(item.id);if(p)p.qty=Math.max(0,p.qty-item.qty);}
+      state.orders.push({id:Date.now(),date:new Date().toISOString(),name,phone,method,address,status:'New',items,total});
+    }
+    state.cart={};
+    save();
+    show('success');
+  }catch(error){toast(error.message);}
+  finally{submit.disabled=false;}
+  return;
+}
 if(form.id==='account-form'){state.customer={name:String(f.get('name')).trim(),email:String(f.get('email')).trim()};save();toast('Demo profile saved');return}
 if(form.id==='contact-form'){state.messages.push({name:String(f.get('name')).trim(),email:String(f.get('email')).trim(),message:String(f.get('message')).trim()});save();form.reset();toast('Demo message saved locally');return}
 if(form.id==='product-form'){const p=Number(f.get('price')),q=Number(f.get('qty'));if(!Number.isFinite(p)||p<=0||!Number.isInteger(q)||q<0)return toast('Please enter valid product values');state.products.push({id:Math.max(0,...state.products.map(x=>x.id))+1,name:String(f.get('name')).trim(),cat:String(f.get('cat')),price:p,qty:q,desc:'Freshly baked with care'});save();show('admin');toast('Product added')}});function openBag(){
@@ -701,6 +748,17 @@ $('#shop-link').addEventListener('click',()=>{if(view!=='home')show('home')});
 const pageAnchors=[...document.querySelectorAll('.nav .links a[href^="#"], .hero a[href^="#"], .cinema a[href^="#"], .story a[href^="#"], .feature-split a[href^="#"]')].filter(a=>!a.hasAttribute('data-view'));pageAnchors.forEach(a=>a.addEventListener('click',e=>{if(view!=='home'){e.preventDefault();show('home');requestAnimationFrame(()=>{const x=document.querySelector(a.getAttribute('href'));if(x)x.scrollIntoView({behavior:'smooth',block:'start'})})}}));
 
 document.querySelector('#quick-close').addEventListener('click',()=>document.querySelector('#quick-dialog').close());document.querySelector('#quick-dialog').addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()});document.querySelector('#sort-menu').addEventListener('change',renderShop);document.querySelector('#wishlist-filter').addEventListener('click',()=>{onlyFavourites=!onlyFavourites;renderShop()});
+import('./assets/firebase-orders.js').then(async cloud=>{
+  if(!cloud.firebaseConfig)return;
+  document.querySelector('.top').textContent='Sukkar & Zaatar · Pickup and delivery';
+  const admin=document.querySelector('footer [data-view="admin"]');
+  if(admin){delete admin.dataset.view;admin.href='firebase-orders.html';admin.textContent='Staff orders';}
+  const stocks=await cloud.requestOrderService('getBakeryInventory');
+  state.products=stock.map(item=>({...item,qty:stocks[item.id]??item.qty}));
+  renderShop();
+  if(view==='detail')show('detail');
+}).catch(()=>{});
+
 const video=$('#bakery-video');
 if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches){
   video.addEventListener('playing',()=>video.classList.add('playing'));

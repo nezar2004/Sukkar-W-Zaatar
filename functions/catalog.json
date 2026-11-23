@@ -1,0 +1,302 @@
+[
+  {
+    "id": 1,
+    "name": "Strawberry Cloud Cake",
+    "price": 850,
+    "qty": 18
+  },
+  {
+    "id": 2,
+    "name": "Chocolate Fudge Cake",
+    "price": 900,
+    "qty": 23
+  },
+  {
+    "id": 3,
+    "name": "Vanilla Cream Cake",
+    "price": 750,
+    "qty": 28
+  },
+  {
+    "id": 4,
+    "name": "Red Velvet Cake",
+    "price": 950,
+    "qty": 33
+  },
+  {
+    "id": 5,
+    "name": "Pistachio Cake",
+    "price": 1000,
+    "qty": 38
+  },
+  {
+    "id": 6,
+    "name": "Caramel Cake",
+    "price": 900,
+    "qty": 18
+  },
+  {
+    "id": 7,
+    "name": "Classic Cheesecake",
+    "price": 700,
+    "qty": 23
+  },
+  {
+    "id": 8,
+    "name": "Lotus Cake",
+    "price": 950,
+    "qty": 28
+  },
+  {
+    "id": 9,
+    "name": "Blueberry Cake",
+    "price": 875,
+    "qty": 33
+  },
+  {
+    "id": 10,
+    "name": "Tiramisu Cake",
+    "price": 925,
+    "qty": 38
+  },
+  {
+    "id": 11,
+    "name": "Honey Cake",
+    "price": 800,
+    "qty": 18
+  },
+  {
+    "id": 12,
+    "name": "Celebration Cake",
+    "price": 1200,
+    "qty": 23
+  },
+  {
+    "id": 13,
+    "name": "Butter Croissant",
+    "price": 225,
+    "qty": 18
+  },
+  {
+    "id": 14,
+    "name": "Almond Croissant",
+    "price": 280,
+    "qty": 23
+  },
+  {
+    "id": 15,
+    "name": "Cinnamon Roll",
+    "price": 250,
+    "qty": 28
+  },
+  {
+    "id": 16,
+    "name": "Brioche Bun",
+    "price": 220,
+    "qty": 33
+  },
+  {
+    "id": 17,
+    "name": "Danish Pastry",
+    "price": 260,
+    "qty": 38
+  },
+  {
+    "id": 18,
+    "name": "Chocolate Danish",
+    "price": 290,
+    "qty": 18
+  },
+  {
+    "id": 19,
+    "name": "Blueberry Muffin",
+    "price": 210,
+    "qty": 23
+  },
+  {
+    "id": 20,
+    "name": "Glazed Donut",
+    "price": 180,
+    "qty": 28
+  },
+  {
+    "id": 21,
+    "name": "Puff Pastry Twist",
+    "price": 215,
+    "qty": 33
+  },
+  {
+    "id": 22,
+    "name": "Sweet Bun",
+    "price": 190,
+    "qty": 38
+  },
+  {
+    "id": 23,
+    "name": "Apple Turnover",
+    "price": 270,
+    "qty": 18
+  },
+  {
+    "id": 24,
+    "name": "Honey Roll",
+    "price": 245,
+    "qty": 23
+  },
+  {
+    "id": 25,
+    "name": "Chocolate Chip Cookies",
+    "price": 280,
+    "qty": 18
+  },
+  {
+    "id": 26,
+    "name": "Double Chocolate Cookies",
+    "price": 310,
+    "qty": 23
+  },
+  {
+    "id": 27,
+    "name": "Oat Cookies",
+    "price": 250,
+    "qty": 28
+  },
+  {
+    "id": 28,
+    "name": "Butter Cookies",
+    "price": 240,
+    "qty": 33
+  },
+  {
+    "id": 29,
+    "name": "Soft Baked Cookies",
+    "price": 280,
+    "qty": 38
+  },
+  {
+    "id": 30,
+    "name": "Nut Cookies",
+    "price": 320,
+    "qty": 18
+  },
+  {
+    "id": 31,
+    "name": "Fudge Brownies",
+    "price": 275,
+    "qty": 23
+  },
+  {
+    "id": 32,
+    "name": "Walnut Brownies",
+    "price": 300,
+    "qty": 28
+  },
+  {
+    "id": 33,
+    "name": "Chocolate Brownies",
+    "price": 280,
+    "qty": 33
+  },
+  {
+    "id": 34,
+    "name": "Cookie Sandwich",
+    "price": 335,
+    "qty": 38
+  },
+  {
+    "id": 35,
+    "name": "Espresso",
+    "price": 150,
+    "qty": 18
+  },
+  {
+    "id": 36,
+    "name": "Americano",
+    "price": 175,
+    "qty": 23
+  },
+  {
+    "id": 37,
+    "name": "Cappuccino",
+    "price": 260,
+    "qty": 28
+  },
+  {
+    "id": 38,
+    "name": "Caffè Latte",
+    "price": 275,
+    "qty": 33
+  },
+  {
+    "id": 39,
+    "name": "Caffè Mocha",
+    "price": 300,
+    "qty": 38
+  },
+  {
+    "id": 40,
+    "name": "Hot Chocolate",
+    "price": 275,
+    "qty": 18
+  },
+  {
+    "id": 41,
+    "name": "English Breakfast Tea",
+    "price": 150,
+    "qty": 23
+  },
+  {
+    "id": 42,
+    "name": "Herbal Tea",
+    "price": 160,
+    "qty": 28
+  },
+  {
+    "id": 43,
+    "name": "Iced Latte",
+    "price": 290,
+    "qty": 18
+  },
+  {
+    "id": 44,
+    "name": "Iced Mocha",
+    "price": 320,
+    "qty": 23
+  },
+  {
+    "id": 45,
+    "name": "Caramel Frappé",
+    "price": 350,
+    "qty": 28
+  },
+  {
+    "id": 46,
+    "name": "Lemon Mint",
+    "price": 260,
+    "qty": 33
+  },
+  {
+    "id": 47,
+    "name": "Fresh Orange Juice",
+    "price": 275,
+    "qty": 38
+  },
+  {
+    "id": 48,
+    "name": "Peach Iced Tea",
+    "price": 250,
+    "qty": 18
+  },
+  {
+    "id": 49,
+    "name": "Vanilla Milkshake",
+    "price": 340,
+    "qty": 23
+  },
+  {
+    "id": 50,
+    "name": "Cold Brew",
+    "price": 290,
+    "qty": 28
+  }
+]

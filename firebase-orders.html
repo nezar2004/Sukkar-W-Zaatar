@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Sukkar &amp; Zaatar | Orders</title>
+<style>
+*{box-sizing:border-box}body{margin:0;color:#244a3b;background:#faf7ef;font:16px/1.55 system-ui,sans-serif}main{max-width:820px;margin:auto;padding:24px 16px}a{color:inherit}h1,h2{font-family:Georgia,serif}form,article{background:#fffdf9;border:1px solid #ded7c8;border-radius:12px;padding:18px;margin:16px 0}label{display:block;margin-bottom:12px}input,select,button{min-height:44px;border-radius:7px;border:1px solid #a8b4a9;padding:8px 12px;font:inherit}input{display:block;width:100%;max-width:360px}button{background:#244a3b;color:white;cursor:pointer}button:disabled{opacity:.55}ol{padding-left:26px}[aria-current=step]{font-weight:700}article p{overflow-wrap:anywhere}[hidden]{display:none}
+</style>
+</head>
+<body>
+<main>
+<a href="./#menu">← Back to menu</a>
+<h1 id="title">Bakery orders</h1>
+<p id="status" role="status"></p>
+<form id="login" hidden>
+<label>Staff email <input name="email" type="email" autocomplete="email" required></label><button>Send sign-in link</button>
+</form>
+<div id="controls" hidden>
+<label>Status <select id="filter"><option value="">All orders</option><option>New</option><option>Preparing</option><option>Ready</option><option>Completed</option></select></label>
+<button type="button" id="staff-refresh">Refresh</button>
+<button type="button" id="staff-logout">Sign out</button>
+</div>
+<div id="results"></div>
+<button type="button" id="refresh" hidden>Refresh status</button>
+</main>
+<script type="module" src="assets/firebase-order-page.js"></script>
+</body>
+</html>

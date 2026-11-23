@@ -1,0 +1,14 @@
+{
+  "name": "sukkar-orders",
+  "private": true,
+  "main": "index.js",
+  "engines": {
+    "node": "22"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
