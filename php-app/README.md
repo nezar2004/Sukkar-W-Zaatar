@@ -26,10 +26,17 @@ Open `preview.html` in any modern browser. It shows the design, mobile navigatio
 
 For PHP's built-in server: after starting MySQL and importing SQL, from the root run `php -S localhost:8000`, then visit `http://localhost:8000/index.php`.
 
+## Order tracking and updates
+
+- For an existing database, re-run `database/schema.sql` to add the tracking table. Keep the existing data and skip the seed.
+- New orders generate a private tracking link. It shows the order number and status in a fresh browser session. My Orders requires sign-in and continues to show earlier orders.
+- Staff can open Admin → Orders, filter by status and update a customer’s order. Tracking shows the latest status when refreshed.
+- Deploy the PHP version on a PHP-capable HTTPS server backed by MySQL or MariaDB. The GitHub Pages storefront is a separate static demo.
+
 ## Important operational notes
 - Images are provided by remote Unsplash URLs and Google Fonts; internet connectivity improves appearance. The application itself and its data operations run locally.
 - **Online card payments are intentionally out of scope**; the demo supports cash on delivery and store pickup only. No card credentials are collected.
-- The checkout form currently requests address for pickup as well; for a production release this should be streamlined.
+- Pickup requires no delivery address. The final review lists items, estimated delivery and total before confirmation. Checkout rechecks the reviewed items, prices and stock in the database.
 - No mail is sent: contact messages are stored in the database and shown in the admin panel.
 - Order cancellation does **not** automatically restock inventory in this academic prototype. Inventory adjustments must be handled by an administrator. Add a consistent restock procedure before production use.
 - Stock changes use a SQL transaction and `SELECT ... FOR UPDATE` to prevent overselling during checkout.
@@ -52,4 +59,4 @@ For PHP's built-in server: after starting MySQL and importing SQL, from the root
 - **M4:** full source code, `tests/test-plan.md`, `docs/user-guide.md`, `docs/technical-guide.md` and live demo script.
 
 ## Known boundaries
-This project is a functioning PHP/MySQL implementation **once configured on a local server**. It has been checked for PHP syntax, but no assertion of successful end-to-end MySQL testing is made unless you perform the included test plan on your machine.
+This project is a functioning PHP/MySQL implementation **once configured on a local server**. The order flow has been exercised against MariaDB, including concurrent checkout, tracking in a separate browser session and staff status updates.

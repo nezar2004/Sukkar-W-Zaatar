@@ -18,6 +18,28 @@ function cart():array{return $_SESSION['cart']??[];}
 function cart_count():int{return array_sum(array_map('intval',cart()));}
 function products_by_ids(array $ids):array{if(!$ids)return []; $ids=array_values(array_filter(array_map('intval',$ids),fn($x)=>$x>0));if(!$ids)return[];$ph=implode(',',array_fill(0,count($ids),'?'));$st=db()->prepare("SELECT * FROM products WHERE active=1 AND id IN ($ph)");$st->execute($ids);return $st->fetchAll();}
 function cart_details():array{$items=[];$subtotal=0.0;foreach(products_by_ids(array_keys(cart())) as $prod){$qty=max(1,min(20,(int)(cart()[$prod['id']]??0)));$line=(float)$prod['price']*$qty;$subtotal+=$line;$prod['qty']=$qty;$prod['line_total']=$line;$items[]=$prod;}return ['items'=>$items,'subtotal'=>$subtotal];}
+function delivery_fee(string $method, float $subtotal): float {
+    global $config;
+    return $method === 'pickup' || $subtotal >= 25 ? 0.0 : (float)$config['delivery_fee'];
+}
+
+function order_quote(array $items, array $selection): string {
+    $quote = [];
+    foreach ($items as $item) {
+        $quote[(int)$item['id']] = [(int)$selection[$item['id']], money($item['price'])];
+    }
+    ksort($quote);
+    return hash('sha256', json_encode($quote, JSON_THROW_ON_ERROR));
+}
+
+function order_status_label(string $status, string $method): string {
+    return match ($status) {
+        'pending' => 'New',
+        'ready' => $method === 'pickup' ? 'Ready for pickup' : 'Ready for delivery',
+        default => ucfirst($status),
+    };
+}
+
 function slug_image(string $key): string {
     $available = ['cake', 'croissant', 'cookies', 'bread', 'cupcake', 'brownie', 'coffee', 'baklava'];
     return 'assets/photos/'.(in_array($key, $available, true) ? $key : 'cake').'.jpg';
